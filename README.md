@@ -3,40 +3,20 @@ The code was first generated from
 
 And then we made the following changes
 #### 1. Add spring-security-spring-boot-starter to pom
+Pulled in newer versions of spring libs
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-security</artifactId>
-    <version>2.3.0.RELEASE</version>
+    <version>2.2.2.RELEASE</version>
 </dependency>
 ```
 #### 2. Map spring-security
-```java
-    @Bean
-    public WebSecurityConfigurerAdapter securityConfigurerAdapter() {
-        return new WebSecurityConfigurerAdapter() {
-            @Override
-            protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-                super.configure(auth);
-            }
-
-            @Override
-            protected void configure(HttpSecurity http) throws Exception {
-                http.authorizeRequests()
-                        .antMatchers("/v1/**", "/v2/**").permitAll().anyRequest().authenticated().and()
-                        .formLogin().loginPage("/login").permitAll().and()
-                        .logout().permitAll();
-            }
-
-            @Bean
-            public UserDetailsService userDetailsService() {
-                UserDetails user = User.withUsername("nhomble")
-                        .password("supersecret")
-                        .roles("read:pets")
-                        .build();
-                return new InMemoryUserDetailsManager(user);
-            }
-        };
-    }
-```
+In [here](src/main/java/io/github/nhomble/openapidemo/configuration/WebSecurityConfig.java)
 ##### Note: there is an in-memory user defined
+
+# Demo
+1. refresh the swagger page
+2. authenticate as nhomble:supersecret
+3. try and fail the delete pet api, 403
+4. try and succeed the get pet by id, 2xx
